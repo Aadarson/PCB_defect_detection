@@ -12,14 +12,14 @@ from backend.model_loader import get_inference_model, get_inference_thresholds
 from database.db import log_prediction
 from utils.logger import inference_logger
 
-# Fallback names if config/dataset structure entirely fails
+# Solder Joint Defect Mapping
 CLASS_NAMES = {
-    0: "missing_hole",
-    1: "mouse_bite",
-    2: "open_circuit",
-    3: "short",
-    4: "spur",
-    5: "spurious_copper"
+    0: "desoldered_joint",    # formerly missing_hole
+    1: "cut_connection",      # formerly mouse_bite
+    2: "open_circuit",        # inherently disconnected
+    3: "solder_bridge",       # formerly short
+    4: "excess_solder",       # formerly spur
+    5: "spurious_solder"      # formerly spurious_copper
 }
 
 # Colors config for bounding boxes (BGR format)
@@ -72,9 +72,8 @@ def predict_image(image_bytes: bytes, filename: str) -> dict:
             conf = float(box.conf[0].item())
             cls_id = int(box.cls[0].item())
             
-            # Class mapping
-            # Attempt to use model names over fallback
-            cls_name = model.names[cls_id] if hasattr(model, 'names') and cls_id in model.names else CLASS_NAMES.get(cls_id, f"Unknown_{cls_id}")
+            # Override model names completely with our custom Solder Joint terminologies
+            cls_name = CLASS_NAMES.get(cls_id, f"Unknown_Defect_{cls_id}")
             
             defects.append({
                 "type": cls_name,
