@@ -1,6 +1,6 @@
-# PCB Defect Detection System (YOLOv8)
+# PCB Defect Detection System (Automated Decision Routing)
 
-A production-ready, research-grade deep learning system for detecting PCB manufacturing defects. Optimized exclusively for CPU inference and training on limited hardware (8GB RAM Windows 11 host).
+My project develops an AI-based PCB inspection system that analyzes solder joint images to detect soldering defects such as excess solder or potential bridging. After classifying the board as Good or Defective, the system performs automated decision routing. If the PCB is predicted as Good, it is marked Ready-to-Sell. If a solder defect is detected, the PCB is routed for Rework. This enables intelligent and consistent quality control without relying entirely on manual inspection.
 
 ## System Architecture
 

@@ -105,10 +105,15 @@ def predict_image(image_bytes: bytes, filename: str) -> dict:
     latency = round((time.time() - start_time) * 1000, 2)
     inference_logger.info(f"Inference complete: {len(defects)} defects found. Latency: {latency}ms")
     
+    board_status = "Good" if len(defects) == 0 else "Defective"
+    routing_decision = "Ready-to-Sell" if len(defects) == 0 else "Rework"
+    
     return {
         "filename": filename,
         "inference_time_ms": latency,
         "total_defects": len(defects),
+        "board_status": board_status,
+        "routing_decision": routing_decision,
         "defects": defects,
         "image_base64": b64_string
     }

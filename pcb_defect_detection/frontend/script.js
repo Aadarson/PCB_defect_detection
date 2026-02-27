@@ -15,12 +15,12 @@ navBtns.forEach(btn => {
         // Update active nav
         navBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        
+
         // Update view
         const targetId = btn.getAttribute('data-target');
         views.forEach(v => v.classList.remove('active'));
         document.getElementById(targetId).classList.add('active');
-        
+
         // Update title
         pageTitle.innerText = btn.innerText;
 
@@ -54,17 +54,17 @@ dropZone.addEventListener('drop', (e) => {
     handleFiles(files);
 });
 
-fileInput.addEventListener('change', function() {
+fileInput.addEventListener('change', function () {
     handleFiles(this.files);
 });
 
 // File Processing
 async function handleFiles(files) {
     if (files.length === 0) return;
-    
+
     // Check sizes
-    for(let f of files) {
-        if(f.size > 5 * 1024 * 1024) {
+    for (let f of files) {
+        if (f.size > 5 * 1024 * 1024) {
             alert(`File ${f.name} exceeds 5MB limit.`);
             return;
         }
@@ -95,7 +95,7 @@ async function handleSingleUpload(file) {
         method: 'POST',
         body: fd
     });
-    
+
     if (!res.ok) {
         throw new Error(await res.text());
     }
@@ -108,10 +108,10 @@ async function handleBatchUpload(files) {
     if (files.length > 10) {
         alert("Batch limit is strictly 10 files. Sending first 10.");
     }
-    
+
     const fd = new FormData();
     const len = Math.min(files.length, 10);
-    for(let i=0; i<len; i++) {
+    for (let i = 0; i < len; i++) {
         fd.append("files", files[i]);
     }
 
@@ -119,14 +119,14 @@ async function handleBatchUpload(files) {
         method: 'POST',
         body: fd
     });
-    
+
     if (!res.ok) {
         throw new Error(await res.text());
     }
     const data = await res.json();
-    
+
     data.batch_results.forEach(item => {
-        if(item.status === 'success') {
+        if (item.status === 'success') {
             renderResultCard(item.data);
         } else {
             console.error(item.error);
@@ -137,14 +137,25 @@ async function handleBatchUpload(files) {
 function renderResultCard(data) {
     const card = document.createElement('div');
     card.className = 'result-card';
-    
+
     let tagsHTML = '';
-    if(data.defects.length === 0) {
+    if (data.defects.length === 0) {
         tagsHTML = `<span class="defect-tag" style="background: rgba(16,185,129,0.1); color: var(--accent-green); border-color: rgba(16,185,129,0.2);">Pass (Clean)</span>`;
     } else {
         data.defects.forEach(d => {
-            tagsHTML += `<span class="defect-tag">${d.type} (${(d.confidence*100).toFixed(1)}%)</span>`;
+            tagsHTML += `<span class="defect-tag">${d.type} (${(d.confidence * 100).toFixed(1)}%)</span>`;
         });
+    }
+
+    let routingHTML = '';
+    if (data.board_status === "Good") {
+        routingHTML = `<div style="margin-top: 10px; padding: 8px; background: rgba(16,185,129,0.1); border: 1px solid var(--accent-green); border-radius: 4px; color: var(--accent-green); font-weight: bold; font-size: 0.9rem;">
+            ✅ Routing Decision: ${data.routing_decision}
+        </div>`;
+    } else {
+        routingHTML = `<div style="margin-top: 10px; padding: 8px; background: rgba(239,68,68,0.1); border: 1px solid var(--accent-red); border-radius: 4px; color: var(--accent-red); font-weight: bold; font-size: 0.9rem;">
+            ⚠️ Routing Decision: ${data.routing_decision}
+        </div>`;
     }
 
     card.innerHTML = `
@@ -154,7 +165,8 @@ function renderResultCard(data) {
         <div class="res-meta">
             <h4>${data.filename}</h4>
             <p style="font-size: 0.85rem; color: var(--text-secondary);">Inference: ${data.inference_time_ms}ms</p>
-            <div class="res-defects">
+            ${routingHTML}
+            <div class="res-defects" style="margin-top: 15px;">
                 ${tagsHTML}
             </div>
         </div>
@@ -166,20 +178,20 @@ function renderResultCard(data) {
 async function fetchStats() {
     try {
         const res = await fetch(`${API_BASE}/stats`);
-        if(!res.ok) return;
+        if (!res.ok) return;
         const data = await res.json();
 
         // Update summaries
         document.getElementById('total-inspections').innerText = data.total_predictions || 0;
-        document.getElementById('avg-confidence').innerText = data.average_confidence 
-            ? (data.average_confidence * 100).toFixed(1) + '%' 
+        document.getElementById('avg-confidence').innerText = data.average_confidence
+            ? (data.average_confidence * 100).toFixed(1) + '%'
             : '--%';
         document.getElementById('common-defect').innerText = data.most_common_defect || '--';
 
         // Update table
         const tbody = document.querySelector('#history-table tbody');
         tbody.innerHTML = '';
-        if(data.recent_history) {
+        if (data.recent_history) {
             data.recent_history.forEach(row => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -191,7 +203,7 @@ async function fetchStats() {
                 tbody.appendChild(tr);
             });
         }
-    } catch(e) {
+    } catch (e) {
         console.error("Stats fetching failed.", e);
     }
 }
