@@ -6,4 +6,5 @@ uvicorn==0.29.0
 matplotlib==3.8.4
 python-multipart==0.0.9
 psutil==5.9.8
+numpy<2.0.0
 # sqlite3 is built-in
