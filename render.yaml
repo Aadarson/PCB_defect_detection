@@ -3,6 +3,7 @@ services:
   - type: web
     name: pcb-defect-api
     env: python
+    rootDir: pcb_defect_detection
     buildCommand: "pip install -r requirements.txt"
     startCommand: "uvicorn backend.app:app --host 0.0.0.0 --port $PORT"
     envVars:
@@ -13,5 +14,6 @@ services:
   - type: web
     name: pcb-defect-dashboard
     env: static
+    rootDir: pcb_defect_detection
     buildCommand: ""
     staticPublishPath: ./frontend
