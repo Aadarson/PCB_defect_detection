@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCB Defect Detection Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo">PCB Vision AI</div>
+            <nav>
+                <button class="nav-btn active" data-target="dashboard-view">Dashboard</button>
+                <button class="nav-btn" data-target="inspection-view">Inspection</button>
+            </nav>
+            <div class="sys-info">CPU Inference Engine <br> v1.0.0</div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <!-- Top Bar -->
+            <header class="topbar">
+                <h1 id="page-title">Dashboard Statistics</h1>
+                <div class="status-indicator">
+                    <span class="dot online"></span> System Health Valid
+                </div>
+            </header>
+
+            <!-- Views -->
+            <div class="views-wrapper">
+                
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <h3>Total Inspections</h3>
+                            <div class="stat-val" id="total-inspections">--</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Average Confidence</h3>
+                            <div class="stat-val" id="avg-confidence">--%</div>
+                        </div>
+                        <div class="stat-card">
+                            <h3>Most Common Defect</h3>
+                            <div class="stat-val highlight" id="common-defect">--</div>
+                        </div>
+                    </div>
+                    
+                    <div class="history-section">
+                        <h2>Recent Detection History</h2>
+                        <div class="table-container">
+                            <table id="history-table">
+                                <thead>
+                                    <tr>
+                                        <th>File</th>
+                                        <th>Defect Type</th>
+                                        <th>Confidence</th>
+                                        <th>Timestamp</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Inspection View -->
+                <section id="inspection-view" class="view">
+                    <div class="upload-area" id="drop-zone">
+                        <div class="upload-icon">📁</div>
+                        <h3>Drag & Drop PCB Images</h3>
+                        <p>up to 5MB (JPG, PNG)</p>
+                        <input type="file" id="file-input" multiple accept=".jpg,.jpeg,.png">
+                        <button class="btn-primary" onclick="document.getElementById('file-input').click()">Browse Files</button>
+                    </div>
+
+                    <div id="results-container" class="results-grid hidden">
+                        <!-- Populated via JS -->
+                    </div>
+                </section>
+                
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="loading-overlay" class="hidden">
+        <div class="spinner"></div>
+        <p>Running Inference...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

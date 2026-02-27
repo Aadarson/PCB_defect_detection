@@ -1,0 +1,30 @@
+# Environments
+venv/
+.venv/
+env/
+.env
+
+# Python caches
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Datasets
+dataset/
+
+# Models & Checkpoints
+models/v*/
+best.pt
+*.onnx
+*.torchscript.pt
+runs/
+
+# Logs & Databases
+logs/
+database/*.db
+
+# OS specific
+.DS_Store
+Thumbs.db

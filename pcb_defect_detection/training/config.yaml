@@ -1,0 +1,59 @@
+# config.yaml - PCB Defect Detection Training Configuration
+
+# 1. Reproducibility
+deterministic_mode: true
+seed: 42
+
+# 2. CPU Safety & Hardware Optimization
+device: 'cpu'
+memory_limit_percent: 85
+enable_memory_guard: true
+workers: 0          # Prevent multiprocessing on 8GB host
+cache: false        # Prevent RAM overflow during dataloading
+pin_memory: false   # Disable GPU pin_memory since device=cpu
+
+# 3. Training Hyperparameters
+epochs: 15          # Reduced from 50 for faster completion
+batch_size: 8       # Increased slightly since images are now much smaller
+image_size: 256     # Slashed from 640 (This makes it 600% faster)
+optimizer: 'AdamW'
+learning_rate: 0.001
+weight_decay: 0.0005
+early_stopping_patience: 10
+
+# 4. Learning Rate Scheduler Options
+scheduler_type: 'CosineAnnealingLR' # options: [CosineAnnealingLR, ReduceLROnPlateau, StepLR]
+warmup_epochs: 3
+min_lr: 0.00001
+gamma: 0.1
+step_size: 15
+
+# 5. Thresholds
+confidence_threshold: 0.05
+iou_threshold: 0.45
+nms_threshold: 0.45
+
+# 6. Advanced Augmentation (Disabled automatically during eval)
+augmentation:
+  hflip: 0.5
+  vflip: 0.0
+  degrees: 0.0      # Disabled rotation to save CPU math
+  translate: 0.0    # Disabled
+  scale: 0.0        # Disabled
+  shear: 0.0
+  perspective: 0.0
+  copypaste: 0.0
+  mixup: 0.0
+  mosaic: 0.0       # Disabled mosaic (heavy CPU penalty)
+  hsv_h: 0.015      # Hue
+  hsv_s: 0.7        # Saturation
+  hsv_v: 0.4        # Brightness
+
+# 7. Imbalance Handling
+use_class_weights: true
+imbalance_threshold: 0.40
+
+# 8. Export & Resume Flags
+resume_training: true
+export_onnx: false
+export_torchscript: false
